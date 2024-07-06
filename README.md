@@ -88,3 +88,18 @@
   ```
   builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
   ```
+
+## Company Controller Action Methods
+- Create an API Empty Controller as `CompaniesController`
+- Write the following code
+  ```
+  private readonly ICompanyRepository _companyRepository;
+  public CompaniesController(ICompanyRepository companyRepository) => _companyRepository = companyRepository;
+  [HttpGet]
+  public async Task<IActionResult> GetAllCompanies()
+  {
+      var companies = await _companyRepository.GetCompanies();
+      return Ok(companies);
+  }
+  ```
+
