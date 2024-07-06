@@ -29,6 +29,11 @@
     public IDbConnection CreateConnection() => new SqlConnection(_connectionString);
     ```
 
+## Add Service in `Program.cs`
+  ```
+  builder.Services.AddSingleton<DapperContext>();
+  ```
+
 ## Model Classes
 - Create a folder `Entities` in the root directory
   - Create a class `Employee` inside `Entities` folder
@@ -49,3 +54,22 @@
       public string? Country { get; set; }
       public List<Employee> Employees { get; set; } = new List<Employee>();
       ```
+## Contract Interfaces and Repository Classes
+- Create a folder `Contracts` in the root directory
+  - Create an interface `ICompanyRepository`
+- Create a folder `Repositories` in the root directory
+  - Create a class `CompanyRepository`
+    - Write the following code
+      ```
+      public class CompanyRepository : ICompanyRepository
+      {
+          private readonly ICompanyRepository _companyRepository;
+          private readonly DapperContext _context;
+          public CompanyRepository(DapperContext context) => _context = context;
+      }
+      ```
+## Add Services
+- Open `Program.cs` file and add the following code
+  ```
+  builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+  ```
