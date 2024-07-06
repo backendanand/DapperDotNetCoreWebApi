@@ -103,3 +103,57 @@
   }
   ```
 
+## Create Api with POST Method
+### Creating Data Transfer Object
+- Create a folder `Dto` in the root directory
+  - Create a class `CompanyCreateDto` inside `Dto`
+    Write the following code
+    ```
+    public string? Name { get; set; }
+    public string? Address { get; set; }
+    public string? Country { get; set; }
+    ```
+### ICompany Repository
+  Write the following code
+  ```
+  ...
+  public Task<Company> CreateCompany(CompanyCreateDto company);
+  ```
+### Defining in `CompanyRepository`
+  Write the following code
+  ```
+  public async Task<Company> CreateCompany(CompanyCreateDto company)
+  {
+      var query = "INSERT INTO Companies (Name, Address, Country) VALUES (@Name, @Address, @Country);" + 
+          "SELECT CAST(SCOPE_IDENTITY() AS int)";
+  
+      var parameters = new DynamicParameters();
+      parameters.Add("Name", company.Name, DbType.String);
+      parameters.Add("Address", company.Address, DbType.String);
+      parameters.Add("Country", company.Country, DbType.String);
+  
+      using (var connection = _context.CreateConnection())
+      {
+          var id = await connection.QuerySingleAsync<int>(query, parameters);
+          var createdCompany = new Company
+          {
+              Id = id,
+              Name = company.Name,
+              Address = company.Address,
+              Country = company.Country,
+          };
+          return createdCompany;
+      }
+  }
+  ```
+### Defining Controller Function
+- Create a `HttpPost` `Async` function inside `CompanyController`
+  Write the following code
+  ```
+  [HttpPost]
+  public async Task<IActionResult> CreateCompany([FromForm]CompanyCreateDto company)
+  {
+      var createdCompany = await _companyRepository.CreateCompany(company);
+      return CreatedAtRoute("CompanyById", new { id = createdCompany.Id }, createdCompany);
+  }
+  ```
