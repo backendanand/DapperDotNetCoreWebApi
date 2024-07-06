@@ -5,7 +5,7 @@
 - Install the following packages
   - Install-Package `Dapper`
   - Install-Package `Microsoft.Data.SqlClient`
-  - 
+    
 ## Connection String
 - Open `appsettings.json` file and write the connection string
   ```
@@ -57,6 +57,10 @@
 ## Contract Interfaces and Repository Classes
 - Create a folder `Contracts` in the root directory
   - Create an interface `ICompanyRepository`
+    - Write the following code
+      ```
+      public Task<IEnumerable<Company>> GetCompanies();
+      ```
 - Create a folder `Repositories` in the root directory
   - Create a class `CompanyRepository`
     - Write the following code
