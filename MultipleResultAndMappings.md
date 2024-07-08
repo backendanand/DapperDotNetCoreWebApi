@@ -26,7 +26,7 @@ public async Task<Company> GetMultipleResults(int id)
 
 ## CompaniesController
 ```
-[HttpGet("{id}/MultipleResult")]
+[HttpGet("{id}/WithAllEmployees")]
 public async Task<IActionResult> GetMultipleResult(int id)
 {
     if (id == 0) return BadRequest();
@@ -35,3 +35,41 @@ public async Task<IActionResult> GetMultipleResult(int id)
     return Ok(company);
 }
 ```
+
+
+# Multiple Mappings
+## ICompanyRepository
+```
+public Task<List<Company>> MultipleMappings();
+```
+
+## CompanyRepository
+```
+public async Task UpdateCompany(int id, CompanyUpdateDto company)
+{
+    var query = "UPDATE Companies SET Name=@Name, Address=@Address, Country=@Country WHERE Id=@Id";
+
+    var parameters = new DynamicParameters();
+    parameters.Add("Id", id, DbType.Int32);
+    parameters.Add("Name", company.Name, DbType.String);
+    parameters.Add("Address", company.Address, DbType.String);
+    parameters.Add("Country", company.Country, DbType.String);
+
+    using (var connection = _context.CreateConnection())
+    {
+        await connection.ExecuteAsync(query, parameters);
+
+    }
+}
+```
+
+## CompaniesController
+```
+[HttpGet("WithAllEmployees")]
+public async Task<IActionResult> MultipleMappings()
+{
+    var companies = await _companyRepository.MultipleMappings();
+    return Ok(companies);
+}
+```
+
