@@ -157,3 +157,53 @@
       return CreatedAtRoute("CompanyById", new { id = createdCompany.Id }, createdCompany);
   }
   ```
+
+## Update api with Update Method
+### Create DTO
+```
+public class CompanyUpdateDto
+{
+    public int Id { get; set; }
+    public string? Name { get; set; }
+    public string? Address { get; set; }
+    public string? Country { get; set; }
+}
+```
+### ICompanyRepository
+```
+public Task UpdateCompany(int id, CompanyUpdateDto company); 
+```
+### CompanyRepository
+```
+public async Task UpdateCompany(int id, CompanyUpdateDto company)
+{
+    var query = "UPDATE Companies SET Name=@Name, Address=@Address, Country=@Country WHERE Id=@Id";
+
+    var parameters = new DynamicParameters();
+    parameters.Add("Id", id, DbType.Int32);
+    parameters.Add("Name", company.Name, DbType.String);
+    parameters.Add("Address", company.Address, DbType.String);
+    parameters.Add("Country", company.Country, DbType.String);
+
+    using (var connection = _context.CreateConnection())
+    {
+        await connection.ExecuteAsync(query, parameters);
+
+    }
+}
+```
+### CompaniesController
+```
+[HttpPut("{id:int}")]
+public async Task<IActionResult> UpdateCompany(int id, [FromForm]CompanyUpdateDto company)
+{
+    if (id == 0 || id != company.Id) return BadRequest();
+
+    var companyToUpdate = await _companyRepository.GetCompany(id);
+    if(companyToUpdate is null) return NotFound();
+
+    await _companyRepository.UpdateCompany(id, company);
+    return NoContent();
+}
+```
+
