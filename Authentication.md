@@ -7,6 +7,8 @@ Install the following packages
 - ``` dotnet install-package Microsoft.AspNetCore.Authentication.JwtBearer ```
 - ``` dotnet install-package System.IdentityModel.Tokens.Jwt ```
 
+Make sure you have already configured Dapper in your project
+
 ## App Settings
 Add the following lines in `appsettings.json`
 ```
