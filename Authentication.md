@@ -6,6 +6,7 @@ Install the following packages
 - ``` dotnet install-package Microsoft.Data.SqlClient ```
 - ``` dotnet install-package Microsoft.AspNetCore.Authentication.JwtBearer ```
 - ``` dotnet install-package System.IdentityModel.Tokens.Jwt ```
+- ``` dotnet install-package Newtonsoft.Json ```
 
 Make sure you have already configured Dapper in your project
 
